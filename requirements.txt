@@ -1,0 +1,7 @@
+opencv-python
+opencv-contrib-python
+numpy
+Pillow
+requests
+openai
+pymupdf
