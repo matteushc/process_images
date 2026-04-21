@@ -24,13 +24,13 @@ def detect_and_draw_contours(image_path, output_folder, output_filename):
     _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
     
     # Optional: Apply Canny edge detection instead of thresholding
-    # edges = cv2.Canny(gray, 100, 200)
+    edges = cv2.Canny(gray, 100, 200)
 
     # 4. Find the contours
     # cv2.findContours returns the contours and the hierarchy
     # cv2.RETR_EXTERNAL retrieves only the extreme outer contours
     # cv2.CHAIN_APPROX_SIMPLE compresses horizontal, vertical, and diagonal segments into their endpoints
-    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     print(f"Number of contours found: {len(contours)}")
 
