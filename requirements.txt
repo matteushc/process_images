@@ -6,3 +6,4 @@ requests
 openai
 pymupdf
 scikit-learn
+easyocr

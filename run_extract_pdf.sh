@@ -20,6 +20,7 @@ fi
 mkdir -p ./encartes/
 mkdir -p ./images/removed/
 mkdir -p ./images/produtos/
+mkdir -p ./images/produtos_produtos_filtrados/
 
 echo "1) Downloading encarte (PDF)..."
 python3 download_encarte.py
@@ -32,5 +33,8 @@ python3 remove_background_color.py
 
 echo "4) Detecting contours and saving product crops..."
 python3 detect_image.py
+
+echo "5) Filtering product crops with OCR..."
+python3 read_image.py
 
 echo "Pipeline finished."
