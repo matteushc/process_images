@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+
+curl -fsSL https://ollama.com/install.sh | sh
+
+ollama pull llama3.2-vision
+ollama pull qwen2.5vl:7b
+
 # Create virtualenv in .venv if it doesn't exist. Prefer `virtualenv` if available, fallback to `python3 -m venv`.
 if [ ! -d ".venv" ]; then
 	if command -v virtualenv >/dev/null 2>&1; then

@@ -1,33 +1,43 @@
-import base64
-from openai import OpenAI
+import ollama
+from pydantic import BaseModel
+from deep_translator import GoogleTranslator
 
-# Initialize client
-#client = OpenAI()
-client = OpenAI(api_key="")
 
-# Encode image to base64
-def encode_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode('utf-8')
+class ObjectDetection(BaseModel):
+    product_name: str
+    product_type: str
+    prices: list[float]
+    brand: str
+    description: str
+    
+    
+models_types = ['llama3.2-vision', 'qwen2.5vl:7b']
 
-# Prepare payload
-image_path = "./images/image_7_xref38.jpeg"
-base64_image = encode_image(image_path)
 
-# API call
-response = client.chat.completions.create(
-    model="gpt-4o", # Use a vision-capable model
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": "Extract the product, brand and price from this image:"},
-                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}} #
-            ],
-        }
-    ],
-    max_tokens=500,
-)
+with open('./image_1_xref20_hsv_removed_extracted_746.png', 'rb') as f:
+  response = ollama.chat(
+    model=models_types[1],
+    format=ObjectDetection.model_json_schema(), # Pass JSON schema
+    messages=[{
+      'role': 'system',
+      'content': "Return the product name, product type, brand, prices and description of the product in the image. Return the response in JSON format according to the provided schema."
+      }, 
+      {
+      'role': 'user',
+      'content': """
+        Extract the product name, product type, prices, brand and description from this image.
+        If you cannot find the prices, return 0. 
+        If you cannot find the brand, return "Unknown".""",
+      'images': [f.read()]
+    }]
+  )
 
-print(type(response.choices[0].message.content))
-print(response.choices[0].message.content)
+analysis = ObjectDetection.model_validate_json(response.message.content)
+print(analysis.product_name)
+print(analysis.prices)
+print(analysis.brand)
+
+product_type = GoogleTranslator(source='en', target='pt').translate(analysis.product_type)
+description = GoogleTranslator(source='en', target='pt').translate(analysis.description)
+print(product_type)
+print(description)

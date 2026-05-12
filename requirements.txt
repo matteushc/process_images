@@ -7,3 +7,5 @@ openai
 pymupdf
 scikit-learn
 easyocr
+deep-translator
+ollama
